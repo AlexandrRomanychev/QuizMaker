@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание нового вопроса</title>
+</head>
+<body>
+<form th:action="@{/saveNewQuestion}" th:object="${question}" method="POST" >
+    <input type="text" th:field="*{text}"/>
+    <div id="answersList"></div>
+    <button>Сохранить</button>
+</form>
+<button onclick="addEmptyAnswer()">Добавить ответ</button>
+<script>
+    function addEmptyAnswer() {
+        let answersList = document.getElementById("answersList");
+        answersList.innerHTML += '<input type="text" ${question.answer}>'
+    }
+</script>
+</body>
+</html>

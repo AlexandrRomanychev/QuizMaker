@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Стартовая страница</title>
+</head>
+<body>
+<div id="questionList">
+    <th:block th:each="question:${questions}">
+        <ul th:each="answer:${question.answers}">
+            <a th:href="@{showAnswer/{id}(id=${answer.id})}">
+                <li th:text="${answer.showed} ? ${answer.text} : 'SHOW ANSWER'"></li>
+            </a>
+        </ul>
+    </th:block>
+</div>
+<a th:href="@{addNewQuestion}">Добавить новый вопрос</a>
+</body>
+</html>
