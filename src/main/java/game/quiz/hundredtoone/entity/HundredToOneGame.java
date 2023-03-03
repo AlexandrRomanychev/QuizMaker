@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,8 +21,15 @@ public class HundredToOneGame {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "question_id")
+	private String text;
+	@ManyToMany
+	@JoinTable(
+		name = "hundredToOneQuestions",
+		joinColumns = { @JoinColumn(name = "question_id") },
+		inverseJoinColumns = { @JoinColumn(name = "hundred_to_one_id") })
 	private List<Question> questionList;
+//
+//	public HundredToOneGame() {
+//		this.questionList = new ArrayList<>();
+//	}
 }

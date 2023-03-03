@@ -8,18 +8,16 @@ import game.quiz.hundredtoone.entity.Question;
 import game.quiz.hundredtoone.repository.AnswerRepository;
 import game.quiz.hundredtoone.repository.HundredToOneRepository;
 import game.quiz.hundredtoone.repository.QuestionRepository;
-import game.quiz.hundredtoone.service.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -34,26 +32,23 @@ public class HundredToOneController {
 	private final QuestionRepository questionRepository;
 	private final AnswerRepository answerRepository;
 	private final HundredToOneRepository hundredToOneRepository;
-	private final AnswerService answerService;
 
 	@Autowired
 	public HundredToOneController(
 		QuestionRepository questionRepository,
 		AnswerRepository answerRepository,
-		HundredToOneRepository hundredToOneRepository,
-		AnswerService answerService
+		HundredToOneRepository hundredToOneRepository
 	) {
 		this.questionRepository = questionRepository;
 		this.answerRepository = answerRepository;
 		this.hundredToOneRepository = hundredToOneRepository;
-		this.answerService = answerService;
 	}
 
 	 @GetMapping("/")
 	 public String getStartPage(Model model) {
-		answerService.uncheckAnswers();
-		 List<Question> questions = questionRepository.findAll();
-		 model.addAttribute("questions", questions);
+		answerRepository.uncheckAnswers();
+		List<HundredToOneGame> hundredToOneGames = hundredToOneRepository.findAll();
+		model.addAttribute("games", hundredToOneGames);
 		 return "startpage";
 	 }
 
@@ -67,6 +62,10 @@ public class HundredToOneController {
 
 	 @PostMapping("/saveNewQuestion")
 	 public String saveNewQuestion(@ModelAttribute("question") Question question) {
+		List<Answer> answers = question.getAnswerList().stream().filter(answer -> !answer.getText().isEmpty()).collect(Collectors.toList());
+		AtomicInteger order = new AtomicInteger(1);
+		answers.forEach(answer -> {answer.setAnswerOrder(order.get()); order.getAndIncrement();});
+		question.setAnswerList(answers);
 		questionRepository.save(question);
 		return "redirect:/";
 	 }
@@ -75,8 +74,7 @@ public class HundredToOneController {
 	 public String showAnswer(
 		 @PathVariable(value = "id") long id,
 		 @PathVariable(value = "gameId") long gameId,
-		 @PathVariable(value = "currentQuestion") int currentQuestion,
-		 Model model
+		 @PathVariable(value = "currentQuestion") int currentQuestion
 	 ) {
 		answerRepository.findById(id).ifPresent(answer -> {
 			answer.setShowed(true);
@@ -98,8 +96,8 @@ public class HundredToOneController {
 	 }
 
 	 @PostMapping("/createNewGame")
-	 public String createNewGame(@ModelAttribute("game") HundredToOneGamePojo hundredToOneGamePojo, Model model) {
-		answerService.uncheckAnswers();
+	 public String createNewGame(@ModelAttribute("game") HundredToOneGamePojo hundredToOneGamePojo) {
+		answerRepository.uncheckAnswers();
 		List<Question> questionForGame = questionRepository.findAllById(
 			hundredToOneGamePojo.getQuestionPojoList().stream()
 				.filter(QuestionPojo::getChecked)
@@ -107,7 +105,7 @@ public class HundredToOneController {
 		);
 		HundredToOneGame hundredToOneGame = new HundredToOneGame();
 		hundredToOneGame.setQuestionList(questionForGame);
-		hundredToOneRepository.save(hundredToOneGame);
+		hundredToOneRepository.saveAndFlush(hundredToOneGame);
 		return "redirect:/game/" + hundredToOneGame.getId() + "/question/0";
 	 }
 
@@ -118,11 +116,18 @@ public class HundredToOneController {
 		 Model model
 	 ) {
 		HundredToOneGame hundredToOneGame = hundredToOneRepository.getById(gameId);
-		hundredToOneGame.getQuestionList().get(questionNumber);
-		 model.addAttribute("question", hundredToOneGame.getQuestionList().get(questionNumber));
+		 Question question = hundredToOneGame.getQuestionList().get(questionNumber);
+		 model.addAttribute("question", question);
+		 model.addAttribute("answers", question.getAnswerList().stream().sorted(Comparator.comparing(Answer::getAnswerOrder)).collect(Collectors.toList()));
 		 model.addAttribute("gameId", hundredToOneGame.getId());
 		 model.addAttribute("currentQuestion", questionNumber);
 		 model.addAttribute("hasNextQuestion", questionNumber < hundredToOneGame.getQuestionList().size() - 1);
 		return "hundredtoone";
+	 }
+
+	 @GetMapping("/game/{gameId}/delete")
+	 public String deleteGame(@PathVariable(name = "gameId") long gameId) {
+		hundredToOneRepository.deleteById(gameId);
+		return "redirect:/";
 	 }
 }

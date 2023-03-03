@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Создание нового вопроса</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
 <form id="question" th:action="@{/saveNewQuestion}" th:object="${question}" method="POST" >
-    <input type="text" th:field="*{text}"/>
+    <div class="form-group">
+    <p>Текст вопроса:</p>
+    <input type="text" th:field="*{text}" class="form-control"/>
+    <br/>
+    </div>
     <th:block th:each="answer, answerIndex: ${question.answerList}">
-        <input type="text" th:field="*{answerList[__${answerIndex.index}__].text}">
+        <div class="form-group">
+            <label>Ответ: </label>
+            <input type="text" th:field="*{answerList[__${answerIndex.index}__].text}" class="form-control">
+            <br/>
+        </div>
     </th:block>
-    <button type="submit">Сохранить</button>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>
 </body>
 </html>

@@ -22,4 +22,5 @@ public class Answer {
 	private Long id;
 	private boolean showed;
 	private String text;
+	private long answerOrder;
 }

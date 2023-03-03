@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Вопрос
@@ -28,7 +29,10 @@ public class Question {
 	@JoinColumn(name = "answer_id")
 	private List<Answer> answerList;
 
-	public Question() {
-		this.answerList = new ArrayList<>();
-	}
+	@ManyToMany(mappedBy = "questionList")
+	private Set<HundredToOneGame> hundredToOneGameSet;
+
+//	public Question() {
+//		this.answerList = new ArrayList<>();
+//	}
 }
