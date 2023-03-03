@@ -1,5 +1,9 @@
 package game.quiz.hundredtoone.entity;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 /**
@@ -8,35 +12,14 @@ import javax.persistence.*;
  * @author Alexandr Romanychev
  * @since 02.03.2023
  */
-@javax.persistence.Entity
+@Setter
+@Getter
+@Entity
+@Table(name = "answer")
 public class Answer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private boolean showed;
 	private String text;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public boolean isShowed() {
-		return showed;
-	}
-
-	public void setShowed(boolean showed) {
-		this.showed = showed;
-	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
 }

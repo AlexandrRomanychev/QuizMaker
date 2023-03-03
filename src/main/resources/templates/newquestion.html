@@ -5,17 +5,12 @@
     <title>Создание нового вопроса</title>
 </head>
 <body>
-<form th:action="@{/saveNewQuestion}" th:object="${question}" method="POST" >
+<form id="question" th:action="@{/saveNewQuestion}" th:object="${question}" method="POST" >
     <input type="text" th:field="*{text}"/>
-    <div id="answersList"></div>
-    <button>Сохранить</button>
+    <th:block th:each="answer, answerIndex: ${question.answerList}">
+        <input type="text" th:field="*{answerList[__${answerIndex.index}__].text}">
+    </th:block>
+    <button type="submit">Сохранить</button>
 </form>
-<button onclick="addEmptyAnswer()">Добавить ответ</button>
-<script>
-    function addEmptyAnswer() {
-        let answersList = document.getElementById("answersList");
-        answersList.innerHTML += '<input type="text" ${question.answer}>'
-    }
-</script>
 </body>
 </html>

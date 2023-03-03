@@ -1,46 +1,34 @@
 package game.quiz.hundredtoone.entity;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO Class Description
+ * Вопрос
  *
  * @author Alexandr Romanychev
  * @since 02.03.2023
  */
+@Setter
+@Getter
 @Entity
+@Table(name = "question")
 public class Question {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private String text;
 
-	@OneToMany(mappedBy = "id")
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "answer_id")
 	private List<Answer> answerList;
 
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	public List<Answer> getAnswerList() {
-		return answerList;
-	}
-
-	public void setAnswerList(List<Answer> answerList) {
-		this.answerList = answerList;
+	public Question() {
+		this.answerList = new ArrayList<>();
 	}
 }

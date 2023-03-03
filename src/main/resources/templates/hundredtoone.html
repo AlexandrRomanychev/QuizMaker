@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Игра 100 на 1</title>
+</head>
+<body>
+<p th:text="${question.text}"></p>
+<ul>
+    <li th:each="answer:${question.answerList}">
+        <a th:href="@{/game/{gameId}/{currentQuestion}/showAnswer/{id}(gameId=${gameId}, currentQuestion=${currentQuestion}, id=${answer.id})}"
+           th:text="${answer.showed} ? ${answer.text} : 'SHOW ANSWER'"></a>
+    </li>
+</ul>
+<div th:if="${currentQuestion} > 0">
+    <a th:href="@{/game/{gameId}/question/{questionNumber}(gameId=${gameId}, questionNumber=${currentQuestion} - 1)}">Назад</a>
+</div>
+<div th:if="${hasNextQuestion}">
+    <a th:href="@{/game/{gameId}/question/{questionNumber}(gameId=${gameId}, questionNumber=${currentQuestion} + 1)}">Следующий вопрос</a>
+</div>
+<div th:unless="${hasNextQuestion}">
+    <a th:href="@{/}">На главную</a>
+</div>
+<script>
+    function showAnswer(element) {
+        console.log(element)
+    }
+</script>
+</body>
+</html>

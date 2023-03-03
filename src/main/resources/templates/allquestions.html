@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Выбрать вопросы</title>
+</head>
+<body>
+    <form th:action="@{/createNewGame}" th:object="${game}" method="POST">
+        <th:block th:each="questionPojo, state: ${allPojoQuestions}">
+            <input type="checkbox"
+                   name="questionPojoList"
+                   th:field="*{questionPojoList[__${state.index}__].checked}"
+                   th:text="*{questionPojoList[__${state.index}__].text}"
+            />
+            <input type="text" th:field="*{questionPojoList[__${state.index}__].id}" hidden/>
+            <br/>
+        </th:block>
+        <button type="submit">Создать игру</button>
+    </form>
+</body>
+</html>
