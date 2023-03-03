@@ -21,15 +21,11 @@ public class HundredToOneGame {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private String text;
+	private String caption;
 	@ManyToMany
 	@JoinTable(
 		name = "hundredToOneQuestions",
 		joinColumns = { @JoinColumn(name = "question_id") },
 		inverseJoinColumns = { @JoinColumn(name = "hundred_to_one_id") })
 	private List<Question> questionList;
-//
-//	public HundredToOneGame() {
-//		this.questionList = new ArrayList<>();
-//	}
 }

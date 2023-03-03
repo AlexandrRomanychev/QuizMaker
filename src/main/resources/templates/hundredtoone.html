@@ -35,15 +35,17 @@
     </li>
 </ol>
 <br/>
-<div th:if="${currentQuestion} > 0">
+<div th:if="${currentQuestion} > 0" class="list-group">
     <a th:href="@{/game/{gameId}/question/{questionNumber}(gameId=${gameId}, questionNumber=${currentQuestion} - 1)}"
        class="list-group-item list-group-item-action text-start"
-    >Назад</a>
+       th:text="Назад"
+    ></a>
 </div>
-<div th:if="${hasNextQuestion}">
+<div th:if="${hasNextQuestion}" class="list-group">
     <a th:href="@{/game/{gameId}/question/{questionNumber}(gameId=${gameId}, questionNumber=${currentQuestion} + 1)}"
        class="list-group-item list-group-item-action text-end"
-    >Далее</a>
+       th:text="Далее"
+    ></a>
 </div>
 </body>
 </html>

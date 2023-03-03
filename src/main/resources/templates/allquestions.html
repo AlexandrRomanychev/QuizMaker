@@ -6,6 +6,11 @@
 </head>
 <body>
     <form th:action="@{/createNewGame}" th:object="${game}" method="POST">
+        <div class="form-group">
+            <p>Название игры:</p>
+            <input type="text" th:field="*{caption}" class="form-control"/>
+            <br/>
+        </div>
         <th:block th:each="questionPojo, state: ${allPojoQuestions}">
             <input type="checkbox"
                    name="questionPojoList"

@@ -20,20 +20,12 @@
 </nav>
 <th:block th:each="game: ${games}">
     <div class="list-group">
-    <a th:text="${game.id}" th:href="@{/game/{gameId}/question/0(gameId=${game.id})}"
+    <a th:text="${game.caption}" th:href="@{/game/{gameId}/question/0(gameId=${game.id})}"
        class="list-group-item list-group-item-action list-group-item-primary text-center"></a>
     <a th:href="@{/game/{gameId}/delete(gameId=${game.id})}"
        class="list-group-item list-group-item-action list-group-item-danger text-center">Удалить игру</a>
-    <a th:href="@{/game/{gameId}/change}"
-       class="list-group-item list-group-item-action list-group-item-warning text-center">Редактировать</a>
     </div>
     <br/>
 </th:block>
-<!--<div class="list-group">-->
-<!--<a th:href="@{/addNewQuestion}"-->
-<!--   class="list-group-item list-group-item-action">Добавить новый вопрос</a>-->
-<!--<a th:href="@{/allQuestions}"-->
-<!--   class="list-group-item list-group-item-action">Создать новую игру</a>-->
-<!--</div>-->
 </body>
 </html>

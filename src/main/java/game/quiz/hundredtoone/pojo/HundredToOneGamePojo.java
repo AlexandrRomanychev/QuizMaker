@@ -18,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 public class HundredToOneGamePojo {
+	private String caption;
 	private List<QuestionPojo> questionPojoList;
 
 	public HundredToOneGamePojo() {

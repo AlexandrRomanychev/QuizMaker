@@ -104,6 +104,7 @@ public class HundredToOneController {
 				.map(QuestionPojo::getId).collect(Collectors.toSet())
 		);
 		HundredToOneGame hundredToOneGame = new HundredToOneGame();
+		hundredToOneGame.setCaption(hundredToOneGamePojo.getCaption());
 		hundredToOneGame.setQuestionList(questionForGame);
 		hundredToOneRepository.saveAndFlush(hundredToOneGame);
 		return "redirect:/game/" + hundredToOneGame.getId() + "/question/0";
