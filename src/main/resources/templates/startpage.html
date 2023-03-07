@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Стартовая страница</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
@@ -13,17 +14,21 @@
                 <a class="nav-link" th:href="@{/addNewQuestion}">Добавить новый вопрос</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/allQuestions}">Создать новую игру</a>
+                <a class="nav-link" th:href="@{/addNewGame}">Создать новую игру</a>
             </li>
         </ul>
     </div>
 </nav>
 <th:block th:each="game: ${games}">
-    <div class="list-group">
-    <a th:text="${game.caption}" th:href="@{/game/{gameId}/question/0(gameId=${game.id})}"
-       class="list-group-item list-group-item-action list-group-item-primary text-center"></a>
-    <a th:href="@{/game/{gameId}/delete(gameId=${game.id})}"
-       class="list-group-item list-group-item-action list-group-item-danger text-center">Удалить игру</a>
+    <div class="position-relative">
+        <div class="d-grid gap-2 d-md-block">
+        <a th:href="@{/game/{gameId}/question/0(gameId=${game.id})}">
+        <button type="button" class="btn btn-outline-primary" th:text="${game.caption}"></button>
+        </a>
+        <a th:href="@{/game/{gameId}/delete(gameId=${game.id})}">
+            <button type="button" class="btn btn-outline-danger btn-sm">Удалить игру</button>
+        </a>
+        </div>
     </div>
     <br/>
 </th:block>

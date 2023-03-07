@@ -15,24 +15,24 @@
         </ul>
     </div>
 </nav>
-<p th:text="${question.text}" class="text-center text-uppercase fs-1"></p>
+<h1 th:text="${question.text}" class="text-center text-uppercase fs-1"></h1>
 
 <ol type="1" class="list-group list-group-numbered">
-    <li th:each="answer:${answers}">
-        <div class="list-group">
-            <div th:if="${answer.showed}">
-                <a th:text="${answer.text}"
-                   class="list-group-item list-group-item-action text-center">
-                </a>
-            </div>
-            <div th:unless="${answer.showed}">
-                <a th:href="@{/game/{gameId}/{currentQuestion}/showAnswer/{id}(gameId=${gameId}, currentQuestion=${currentQuestion}, id=${answer.id})}"
-                   th:text="'SHOW ANSWER'"
-                   class="list-group-item list-group-item-action list-group-item-info text-center">
-                </a>
-            </div>
-        </div>
-    </li>
+    <div class="list-group">
+        <th:block th:each="answer, state:${answers}">
+            <a th:if="${answer.showed}" class="list-group-item list-group-item-action text-center">
+            <li>
+                <h2 th:text="${answer.text}"></h2>
+            </li>
+            </a>
+            <a th:unless="${answer.showed}" th:href="@{/game/{gameId}/{currentQuestion}/showAnswer/{id}(gameId=${gameId}, currentQuestion=${currentQuestion}, id=${answer.id})}"
+               class="list-group-item list-group-item-action list-group-item-info text-center">
+            <li>
+                <h2 th:text="'SHOW ANSWER'"></h2>
+            </li>
+            </a>
+        </th:block>
+    </div>
 </ol>
 <br/>
 <div th:if="${currentQuestion} > 0" class="list-group">

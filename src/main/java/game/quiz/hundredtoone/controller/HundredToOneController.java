@@ -83,7 +83,7 @@ public class HundredToOneController {
 		 return "redirect:/game/" + gameId + "/question/" + currentQuestion;
 	 }
 
-	 @GetMapping("/allQuestions")
+	 @GetMapping("/addNewGame")
 	 public String showAllQuestions(Model model) {
 		List<Question> allQuestions = questionRepository.findAll();
 		List<QuestionPojo> questionPojoList = new ArrayList<>();
@@ -92,7 +92,7 @@ public class HundredToOneController {
 		hundredToOneGamePojo.setQuestionPojoList(questionPojoList);
 		model.addAttribute("game", hundredToOneGamePojo);
 		model.addAttribute("allPojoQuestions", questionPojoList);
-		return "allquestions";
+		return "newhundredtoone";
 	 }
 
 	 @PostMapping("/createNewGame")
