@@ -16,7 +16,7 @@
         </ul>
     </div>
 </nav>
-    <form th:action="@{/createNewGame}" th:object="${game}" method="POST">
+    <form th:action="@{/saveGame}" th:object="${game}" method="POST">
         <div class="form-group">
             <p>Название игры:</p>
             <input type="text" th:field="*{caption}" class="form-control"/>
@@ -29,6 +29,7 @@
                    name="questionPojoList"
                    th:field="*{questionPojoList[__${state.index}__].checked}"
                    class="form-check-input"
+                   th:checked="${questionPojo.checked}"
             />
             <label class="form-check-label" th:text="*{questionPojoList[__${state.index}__].text}"></label>
             <input type="text" th:field="*{questionPojoList[__${state.index}__].id}" hidden/>

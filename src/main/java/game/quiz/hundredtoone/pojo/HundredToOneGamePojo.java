@@ -24,4 +24,9 @@ public class HundredToOneGamePojo {
 	public HundredToOneGamePojo() {
 		this.questionPojoList = new ArrayList<>();
 	}
+	public HundredToOneGamePojo(HundredToOneGame hundredToOneGame) {
+		this();
+		this.caption = hundredToOneGame.getCaption();
+		hundredToOneGame.getQuestionList().forEach(question -> questionPojoList.add(new QuestionPojo(question)));
+	}
 }

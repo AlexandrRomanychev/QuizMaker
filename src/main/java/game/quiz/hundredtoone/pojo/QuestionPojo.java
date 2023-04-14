@@ -14,11 +14,12 @@ public class QuestionPojo {
 
 	private Long id;
 	private String text;
-	private boolean checked = false;
+	private boolean checked;
 
 	public QuestionPojo(Question question) {
 		this.id = question.getId();
 		this.text = question.getText();
+		this.checked = false;
 	}
 
 	public Long getId() {

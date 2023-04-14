@@ -13,10 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -27,7 +24,7 @@ import java.util.stream.Collectors;
  * @since 02.03.2023
  */
 @Controller
-public class HundredToOneController {
+public class HundredToOneController implements GameInfo {
 
 	private final QuestionRepository questionRepository;
 	private final AnswerRepository answerRepository;
@@ -44,20 +41,24 @@ public class HundredToOneController {
 		this.hundredToOneRepository = hundredToOneRepository;
 	}
 
+	/**
+	 * Получить стартовую страницу игры
+	 */
 	 @GetMapping("/")
 	 public String getStartPage(Model model) {
 		answerRepository.uncheckAnswers();
-		List<HundredToOneGame> hundredToOneGames = hundredToOneRepository.findAll();
-		model.addAttribute("games", hundredToOneGames);
-		 return "startpage";
+		 return getGameFolder() + "start_page";
 	 }
 
+	/**
+	 * Добавить новый вопрос
+	 */
 	 @GetMapping("/addNewQuestion")
 	 public String addNewQuestion(Model model) {
 		Question question = new Question();
 		question.setAnswerList(Arrays.asList(new Answer(), new Answer(),new Answer(),new Answer(),new Answer(),new Answer()));
 		model.addAttribute("question", question);
-		return "newquestion";
+		return getGameFolder() + "new_question";
 	 }
 
 	 @PostMapping("/saveNewQuestion")
@@ -84,7 +85,7 @@ public class HundredToOneController {
 	 }
 
 	 @GetMapping("/addNewGame")
-	 public String showAllQuestions(Model model) {
+	 public String addNewGame(Model model) {
 		List<Question> allQuestions = questionRepository.findAll();
 		List<QuestionPojo> questionPojoList = new ArrayList<>();
 		allQuestions.forEach(question -> questionPojoList.add(new QuestionPojo(question)));
@@ -92,11 +93,11 @@ public class HundredToOneController {
 		hundredToOneGamePojo.setQuestionPojoList(questionPojoList);
 		model.addAttribute("game", hundredToOneGamePojo);
 		model.addAttribute("allPojoQuestions", questionPojoList);
-		return "newhundredtoone";
+		return getGameFolder() + "game_info";
 	 }
 
-	 @PostMapping("/createNewGame")
-	 public String createNewGame(@ModelAttribute("game") HundredToOneGamePojo hundredToOneGamePojo) {
+	 @PostMapping("/saveGame")
+	 public String saveGAme(@ModelAttribute("game") HundredToOneGamePojo hundredToOneGamePojo) {
 		answerRepository.uncheckAnswers();
 		List<Question> questionForGame = questionRepository.findAllById(
 			hundredToOneGamePojo.getQuestionPojoList().stream()
@@ -107,7 +108,7 @@ public class HundredToOneController {
 		hundredToOneGame.setCaption(hundredToOneGamePojo.getCaption());
 		hundredToOneGame.setQuestionList(questionForGame);
 		hundredToOneRepository.saveAndFlush(hundredToOneGame);
-		return "redirect:/game/" + hundredToOneGame.getId() + "/question/0";
+		return "redirect:/";
 	 }
 
 	 @GetMapping("game/{gameId}/question/{questionNumber}")
@@ -117,13 +118,13 @@ public class HundredToOneController {
 		 Model model
 	 ) {
 		HundredToOneGame hundredToOneGame = hundredToOneRepository.getById(gameId);
-		 Question question = hundredToOneGame.getQuestionList().get(questionNumber);
-		 model.addAttribute("question", question);
-		 model.addAttribute("answers", question.getAnswerList().stream().sorted(Comparator.comparing(Answer::getAnswerOrder)).collect(Collectors.toList()));
-		 model.addAttribute("gameId", hundredToOneGame.getId());
-		 model.addAttribute("currentQuestion", questionNumber);
-		 model.addAttribute("hasNextQuestion", questionNumber < hundredToOneGame.getQuestionList().size() - 1);
-		return "hundredtoone";
+		Question question = hundredToOneGame.getQuestionList().get(questionNumber);
+		model.addAttribute("question", question);
+		model.addAttribute("answers", question.getAnswerList().stream().sorted(Comparator.comparing(Answer::getAnswerOrder)).collect(Collectors.toList()));
+		model.addAttribute("gameId", hundredToOneGame.getId());
+		model.addAttribute("currentQuestion", questionNumber);
+		model.addAttribute("hasNextQuestion", questionNumber < hundredToOneGame.getQuestionList().size() - 1);
+		return getGameFolder() + "game";
 	 }
 
 	 @GetMapping("/game/{gameId}/delete")
@@ -131,4 +132,35 @@ public class HundredToOneController {
 		hundredToOneRepository.deleteById(gameId);
 		return "redirect:/";
 	 }
+
+	@GetMapping("/game/{gameId}/edit")
+	public String editGame(@PathVariable(name = "gameId") long gameId, Model model) {
+		hundredToOneRepository.findById(gameId).ifPresent(hundredToOneGame -> {
+			Set<Long> gameQuestionIds = hundredToOneGame.getQuestionList().stream().map(Question::getId).collect(Collectors.toSet());
+			List<Question> allQuestions = questionRepository.findAll();
+			List<QuestionPojo> questionPojoList = new ArrayList<>();
+			allQuestions.forEach(question -> questionPojoList.add(new QuestionPojo(question)));
+			questionPojoList.forEach(questionPojo -> {
+				if (gameQuestionIds.contains(questionPojo.getId())) {
+					questionPojo.setChecked(true);
+				}
+			});
+			HundredToOneGamePojo hundredToOneGamePojo = new HundredToOneGamePojo(hundredToOneGame);
+			model.addAttribute("game", hundredToOneGamePojo);
+			model.addAttribute("allPojoQuestions", questionPojoList);
+		});
+		return getGameFolder() + "game_info";
+	}
+
+	 @GetMapping("/showAllGames")
+	 public String getAllGames(Model model) {
+		 List<HundredToOneGame> hundredToOneGames = hundredToOneRepository.findAll();
+		 model.addAttribute("games", hundredToOneGames);
+		 return getGameFolder() + "all_games";
+	 }
+
+	@Override
+	public String getGameFolder() {
+		return "/hundred_to_one/";
+	}
 }
