@@ -31,8 +31,4 @@ public class Question {
 
 	@ManyToMany(mappedBy = "questionList")
 	private Set<HundredToOneGame> hundredToOneGameSet;
-
-//	public Question() {
-//		this.answerList = new ArrayList<>();
-//	}
 }

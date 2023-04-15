@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @since 02.03.2023
  */
 @Controller
-public class HundredToOneController implements GameInfo {
+public class HundredToOneController {
 
 	private final QuestionRepository questionRepository;
 	private final AnswerRepository answerRepository;
@@ -45,20 +45,9 @@ public class HundredToOneController implements GameInfo {
 	 * Получить стартовую страницу игры
 	 */
 	 @GetMapping("/")
-	 public String getStartPage(Model model) {
+	 public String getStartPage() {
 		answerRepository.uncheckAnswers();
-		 return getGameFolder() + "start_page";
-	 }
-
-	/**
-	 * Добавить новый вопрос
-	 */
-	 @GetMapping("/addNewQuestion")
-	 public String addNewQuestion(Model model) {
-		Question question = new Question();
-		question.setAnswerList(Arrays.asList(new Answer(), new Answer(),new Answer(),new Answer(),new Answer(),new Answer()));
-		model.addAttribute("question", question);
-		return getGameFolder() + "new_question";
+		 return "/hundred_to_one/start_page";
 	 }
 
 	 @PostMapping("/saveNewQuestion")
@@ -93,7 +82,7 @@ public class HundredToOneController implements GameInfo {
 		hundredToOneGamePojo.setQuestionPojoList(questionPojoList);
 		model.addAttribute("game", hundredToOneGamePojo);
 		model.addAttribute("allPojoQuestions", questionPojoList);
-		return getGameFolder() + "game_info";
+		return "/hundred_to_one/game_info";
 	 }
 
 	 @PostMapping("/saveGame")
@@ -118,13 +107,13 @@ public class HundredToOneController implements GameInfo {
 		 Model model
 	 ) {
 		HundredToOneGame hundredToOneGame = hundredToOneRepository.getById(gameId);
-		Question question = hundredToOneGame.getQuestionList().get(questionNumber);
+		Question question = hundredToOneGame.getQuestionList().stream().sorted(Comparator.comparing(Question::getId)).collect(Collectors.toList()).get(questionNumber);
 		model.addAttribute("question", question);
 		model.addAttribute("answers", question.getAnswerList().stream().sorted(Comparator.comparing(Answer::getAnswerOrder)).collect(Collectors.toList()));
 		model.addAttribute("gameId", hundredToOneGame.getId());
 		model.addAttribute("currentQuestion", questionNumber);
 		model.addAttribute("hasNextQuestion", questionNumber < hundredToOneGame.getQuestionList().size() - 1);
-		return getGameFolder() + "game";
+		return "/hundred_to_one/game";
 	 }
 
 	 @GetMapping("/game/{gameId}/delete")
@@ -149,18 +138,13 @@ public class HundredToOneController implements GameInfo {
 			model.addAttribute("game", hundredToOneGamePojo);
 			model.addAttribute("allPojoQuestions", questionPojoList);
 		});
-		return getGameFolder() + "game_info";
+		return "/hundred_to_one/game_info";
 	}
 
 	 @GetMapping("/showAllGames")
 	 public String getAllGames(Model model) {
 		 List<HundredToOneGame> hundredToOneGames = hundredToOneRepository.findAll();
 		 model.addAttribute("games", hundredToOneGames);
-		 return getGameFolder() + "all_games";
+		 return "/hundred_to_one/all_games";
 	 }
-
-	@Override
-	public String getGameFolder() {
-		return "/hundred_to_one/";
-	}
 }
