@@ -43,4 +43,5 @@ public class QuestionController {
 		model.addAttribute("questions", allQuestions);
 		return "/hundred_to_one/all_questions";
 	}
+
 }
