@@ -9,12 +9,13 @@ import game.quiz.hundredtoone.repository.AnswerRepository;
 import game.quiz.hundredtoone.repository.HundredToOneRepository;
 import game.quiz.hundredtoone.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -48,16 +49,6 @@ public class HundredToOneController {
 	 public String getStartPage() {
 		answerRepository.uncheckAnswers();
 		 return "/hundred_to_one/start_page";
-	 }
-
-	 @PostMapping("/saveNewQuestion")
-	 public String saveNewQuestion(@ModelAttribute("question") Question question) {
-		List<Answer> answers = question.getAnswerList().stream().filter(answer -> !answer.getText().isEmpty()).collect(Collectors.toList());
-		AtomicInteger order = new AtomicInteger(1);
-		answers.forEach(answer -> {answer.setAnswerOrder(order.get()); order.getAndIncrement();});
-		question.setAnswerList(answers);
-		questionRepository.save(question);
-		return "redirect:/";
 	 }
 
 	 @GetMapping("/game/{gameId}/{currentQuestion}/showAnswer/{id}")
@@ -146,5 +137,10 @@ public class HundredToOneController {
 		 List<HundredToOneGame> hundredToOneGames = hundredToOneRepository.findAll();
 		 model.addAttribute("games", hundredToOneGames);
 		 return "/hundred_to_one/all_games";
+	 }
+
+	 @GetMapping(value = "/test", produces = "application/json")
+	 public ResponseEntity<String> testRequest() {
+		 return new ResponseEntity<>("{'test':'test'}", HttpStatus.OK);
 	 }
 }
