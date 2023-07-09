@@ -48,7 +48,7 @@ public class HundredToOneController {
 	 @GetMapping("/")
 	 public String getStartPage() {
 		answerRepository.uncheckAnswers();
-		 return "/hundred_to_one/start_page";
+		 return "hundred_to_one/start_page";
 	 }
 
 	 @GetMapping("/game/{gameId}/{currentQuestion}/showAnswer/{id}")
@@ -73,7 +73,7 @@ public class HundredToOneController {
 		hundredToOneGamePojo.setQuestionPojoList(questionPojoList);
 		model.addAttribute("game", hundredToOneGamePojo);
 		model.addAttribute("allPojoQuestions", questionPojoList);
-		return "/hundred_to_one/game_info";
+		return "hundred_to_one/game_info";
 	 }
 
 	 @PostMapping("/saveGame")
@@ -104,7 +104,7 @@ public class HundredToOneController {
 		model.addAttribute("gameId", hundredToOneGame.getId());
 		model.addAttribute("currentQuestion", questionNumber);
 		model.addAttribute("hasNextQuestion", questionNumber < hundredToOneGame.getQuestionList().size() - 1);
-		return "/hundred_to_one/game";
+		return "hundred_to_one/game";
 	 }
 
 	 @GetMapping("/game/{gameId}/delete")
@@ -129,14 +129,14 @@ public class HundredToOneController {
 			model.addAttribute("game", hundredToOneGamePojo);
 			model.addAttribute("allPojoQuestions", questionPojoList);
 		});
-		return "/hundred_to_one/game_info";
+		return "hundred_to_one/game_info";
 	}
 
 	 @GetMapping("/showAllGames")
 	 public String getAllGames(Model model) {
 		 List<HundredToOneGame> hundredToOneGames = hundredToOneRepository.findAll();
 		 model.addAttribute("games", hundredToOneGames);
-		 return "/hundred_to_one/all_games";
+		 return "hundred_to_one/all_games";
 	 }
 
 	 @GetMapping(value = "/test", produces = "application/json")

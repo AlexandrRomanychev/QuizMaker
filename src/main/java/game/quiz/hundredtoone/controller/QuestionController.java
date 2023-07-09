@@ -38,7 +38,7 @@ public class QuestionController {
 	 */
 	@GetMapping(value = "/addNewQuestion")
 	public String addNewQuestion() {
-		return "/hundred_to_one/new_question";
+		return "hundred_to_one/new_question";
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class QuestionController {
 	public String showAllQuestions(Model model) {
 		List<Question> allQuestions = questionRepository.findAll();
 		model.addAttribute("questions", allQuestions);
-		return "/hundred_to_one/all_questions";
+		return "hundred_to_one/all_questions";
 	}
 
 	@PostMapping(

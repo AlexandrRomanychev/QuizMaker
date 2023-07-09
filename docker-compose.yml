@@ -6,11 +6,20 @@ services:
     image: quiz:latest
     ports:
       - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/Quiz
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      - postgres
   postgres:
     image: postgres
+    volumes:
+      - ./init_db.sh:/docker-entrypoint-initdb.d/init_db.sh
     environment:
-      POSTGRES_DB: "quiz"
+      POSTGRES_DB: "Quiz"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
-      ports:
-        - "5432:5432"
+    ports:
+      - '5432:5432'
